@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright 2023 Simone Rubino - Aion Tech
+  ~ License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
+  -->
+<odoo>
+    <record id="account_tax_excise_oil_carburetion" model="account.tax">
+        <field name="name">Oil for carburetion</field>
+        <field name="description">Oil for carburetion</field>
+        <field name="type_tax_use">sale</field>
+        <field name="amount_type">code</field>
+        <field name="amount">0</field>
+        <field name="python_compute">
+total_volume = (product.volume or 0) * quantity
+result = total_volume * 728.4
+        </field>
+    </record>
+</odoo>
