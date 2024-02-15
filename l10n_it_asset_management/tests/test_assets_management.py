@@ -280,7 +280,7 @@ class TestAssets(TransactionCase):
             .create(
                 {
                     "management_type": "dismiss",
-                    "asset_id": asset.id,
+                    "l10n_it_asset_id": asset.id,
                 }
             )
         )
@@ -317,7 +317,7 @@ class TestAssets(TransactionCase):
             .create(
                 {
                     "management_type": "dismiss",
-                    "asset_id": asset.id,
+                    "l10n_it_asset_id": asset.id,
                     "dismiss_date": sale_invoice.invoice_date,
                 }
             )
@@ -393,7 +393,7 @@ class TestAssets(TransactionCase):
             .create(
                 {
                     "management_type": "dismiss",
-                    "asset_id": asset.id,
+                    "l10n_it_asset_id": asset.id,
                 }
             )
         )
@@ -513,7 +513,7 @@ class TestAssets(TransactionCase):
                 {
                     "management_type": "update",
                     "category_id": self.asset_category_1.id,
-                    "asset_id": asset.id,
+                    "l10n_it_asset_id": asset.id,
                     "depreciation_type_ids": [Command.set(civ_type.ids)],
                 }
             )
@@ -611,7 +611,7 @@ class TestAssets(TransactionCase):
                 {
                     "management_type": "update",
                     "category_id": self.asset_category_1.id,
-                    "asset_id": asset.id,
+                    "l10n_it_asset_id": asset.id,
                     "depreciation_type_ids": [Command.set(civ_type.ids)],
                 }
             )
