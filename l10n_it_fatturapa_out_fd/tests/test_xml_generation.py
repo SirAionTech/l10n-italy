@@ -3,23 +3,23 @@
 
 import base64
 
-from odoo.addons.l10n_it_fatturapa_out.tests.fatturapa_common import (FatturaPACommon)
 from odoo.tests import Form
 
+from odoo.addons.l10n_it_fatturapa_out.tests.fatturapa_common import FatturaPACommon
 
-class TestXMLGeneration (FatturaPACommon):
 
+class TestXMLGeneration(FatturaPACommon):
     def test_fixed_discount(self):
         """Generate an e-invoice for an invoice having a fixed discount.
         Check that the ScontoMaggiorazione is present in the generated e-invoice.
         """
         # Setup for fixing date and sequence of new invoices
-        date_invoice = '2020-01-01'
+        date_invoice = "2020-01-01"
         self.set_sequences(1, date_invoice)
 
         # Arrange: Create an invoice with one line costing 100
         # and fixed discount of 20
-        invoice_form = Form(self.env['account.invoice'])
+        invoice_form = Form(self.env["account.invoice"])
         invoice_form.partner_id = self.res_partner_fatturapa_2
         invoice_form.date_invoice = date_invoice
         with invoice_form.invoice_line_ids.new() as line:
@@ -37,14 +37,14 @@ class TestXMLGeneration (FatturaPACommon):
 
         # Act: Generate the e-invoice
         action = self.run_wizard(invoice.id)
-        e_invoice = self.env[action['res_model']].browse(action['res_id'])
+        e_invoice = self.env[action["res_model"]].browse(action["res_id"])
 
         # Assert: The E-invoice matches the XML in tests data
-        file_name = 'IT06363391001_00001.xml'
+        file_name = "IT06363391001_00001.xml"
         self.set_e_invoice_file_id(e_invoice, file_name)
         xml_content = base64.decodebytes(e_invoice.datas)
         self.check_content(
             xml_content,
             file_name,
-            module_name='l10n_it_fatturapa_out_fd',
+            module_name="l10n_it_fatturapa_out_fd",
         )
