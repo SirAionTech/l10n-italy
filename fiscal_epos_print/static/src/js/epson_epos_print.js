@@ -469,6 +469,14 @@ odoo.define("fiscal_epos_print.epson_epos_print", function (require) {
             console.log(xml);
         },
 
+        getNonFiscalNode: function(data, font="3", operator="1") {
+            var node = xml.createElement("printNormal");
+            node.setAttribute("data", data);
+            node.setAttribute("font", font);
+            node.setAttribute("operator", operator);
+            return node
+        },
+
         prepareXMLNonFiscalReceipt: function(receipt) {
             var xml = document.implementation.createDocument(null, "printerNonFiscal");
 
@@ -476,19 +484,65 @@ odoo.define("fiscal_epos_print.epson_epos_print", function (require) {
             beginNonFiscal.setAttribute("operator", receipt.operator || "1");
             xml.documentElement.appendChild(beginNonFiscal);
 
-            var printNormal = xml.createElement("printNormal");
-            printNormal.setAttribute("data", _t("Courtesy receipt"));
-            printNormal.setAttribute("font", "3");
-            printNormal.setAttribute("operator", receipt.operator || "1");
-            xml.documentElement.appendChild(printNormal);
+            xml.documentElement.appendChild(this.getNonFiscalNode(
+                _t("Courtesy receipt"),
+                font="3",
+                operator=receipt.operator,
+            ));
 
-            for (let line of receipt.orderlines) {
-                printNormal = xml.createElement("printNormal");
-                printNormal.setAttribute("data", line.product_name);
-                printNormal.setAttribute("font", "1");
-                printNormal.setAttribute("operator", receipt.operator || "1");
-                xml.documentElement.appendChild(printNormal);
+            var order = this.order;
+            var orderName = order.name;
+            if (orderName) {
+                xml.documentElement.appendChild(this.getNonFiscalNode(
+                    orderName,
+                    operator=receipt.operator,
+                ));
             }
+
+            var orderDate = order.validation_date;
+            if (orderDate) {
+                xml.documentElement.appendChild(this.getNonFiscalNode(
+                    orderDate,
+                    operator=receipt.operator,
+                ));
+            }
+
+            var client = order.get_client();
+
+            var clientName = client.name;
+            if (clientName) {
+                xml.documentElement.appendChild(this.getNonFiscalNode(
+                    clientName,
+                    operator=receipt.operator,
+                ));
+            }
+
+            var clientAddress = client.address;
+            if (clientAddress) {
+                xml.documentElement.appendChild(this.getNonFiscalNode(
+                    clientAddress,
+                    operator=receipt.operator,
+                ));
+            }
+
+            var clientVAT = client.vat;
+            if (clientVAT) {
+                xml.documentElement.appendChild(this.getNonFiscalNode(
+                    clientVAT,
+                    operator=receipt.operator,
+                ));
+            }
+
+            var lineNode;
+            for (let line of receipt.orderlines) {
+                lineNode = xml.createElement("printNormal");
+                lineNode.setAttribute("data", line.product_name);
+                lineNode.setAttribute("font", "1");
+                lineNode.setAttribute("operator", receipt.operator || "1");
+                xml.documentElement.appendChild(lineNode);
+            }
+
+            var note = "Copia di cortesia non valida ai fini fiscali. L’originale della fattura è stato inviato allo SdI ed è consultabile all’interno dell’Area Riservata del sito dell’Agenzia delle Entrate."
 
             var endNonFiscal = xml.createElement("endNonFiscal");
             endNonFiscal.setAttribute("operator", receipt.operator || "1");
